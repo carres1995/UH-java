@@ -22,4 +22,4 @@ Feature	Java 8
 
 - The '==' operator compares the REFERENCE in the Heap memory.
 - Even though they have the same data, they are two distinct objects in different memory locations.
-- To compare the CONTENT in Records, we would use company.equals(company2) -> true.
+- To compare the CONTENT in Records, we would use company.equals(company2) -> true. ##
