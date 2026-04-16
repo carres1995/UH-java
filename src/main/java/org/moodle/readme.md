@@ -22,4 +22,20 @@ Feature	Java 8
 
 - The '==' operator compares the REFERENCE in the Heap memory.
 - Even though they have the same data, they are two distinct objects in different memory locations.
-- To compare the CONTENT in Records, we would use company.equals(company2) -> true.
+- To compare the CONTENT in Records, we would use company.equals(company2) -> true. ##
+
+
+### UH #2
+
+- Fall-through (java 8), High risk of "Fall-through" bugs if 'break' is missing, Highly verbose; requires manual assignment to a variable.
+- (java 17/2021), "Switch Expressions" are exhaustive and safe, No 'break' needed code, can return a value directly to a variable.
+- var Declaration The compiler "guesses" the type from the value, Location	Used anywhere (fields, parameters, etc.), Readability	High for complex return types. Explicit tipping java 8 You must know and write the type, High for r, ducing boilerplate/noise, Only for local variables inside methods.
+  	
+- Do/while is a bucle 
+
+## loss of precision
+When explicitly casting 'double' to 'int', Java removes the fractional part (mantissa) without rounding.
+This results in a significant loss of data for financial or academic reports, as 4.9 and 4.0 would both be reported as 4.
+
+## LTS ANALYSIS: Evolution of Exception Diagnostics
+In Java 8: Error messages were often generic (like NullPointerException). The developer had to guess which part of a line like 'a.getB().getC()' was null. In Java 17/21: "Helpful NullPointerExceptions" and "Enhanced Error Messages" were introduced. Now, Java explicitly tells you exactly which variable caused the error and provides more context in the StackTrace, reducing debugging time significantly.
