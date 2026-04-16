@@ -39,3 +39,11 @@ This results in a significant loss of data for financial or academic reports, as
 
 ## LTS ANALYSIS: Evolution of Exception Diagnostics
 In Java 8: Error messages were often generic (like NullPointerException). The developer had to guess which part of a line like 'a.getB().getC()' was null. In Java 17/21: "Helpful NullPointerExceptions" and "Enhanced Error Messages" were introduced. Now, Java explicitly tells you exactly which variable caused the error and provides more context in the StackTrace, reducing debugging time significantly.
+
+### UH #3
+## SECURITY AND DESIGN ANALYSIS (JAVA 11):
+These collections created with List.of() and Map.of() are IMMUTABLE.
+1. Security: They are thread-safe in multithreaded environments because their state does not change.
+2. Integrity: They prevent accidental errors when attempting to add a location or technology that does not exist using .add().
+If you try to use .add() or .remove(), Java will throw an UnsupportedOperationException.
+Performance: Unlike traditional ArrayLists, they occupy less memory because they have a predefined fixed size.

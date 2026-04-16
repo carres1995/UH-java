@@ -2,9 +2,14 @@ package org.moodle.domain;
 
 import org.moodle.utils.Validations;
 
+import java.util.List;
+import java.util.Map;
+
 public class Empleado {
     static Validations validate = new Validations();
+
     //these are primitives dates
+    /*
     byte smallerNumber = 1;
     short smallNumber = 200;
     int integerNumber = 100000;
@@ -14,32 +19,52 @@ public class Empleado {
     char character = 'A';
     boolean trueFalse = true;
 
-
     //This date isn't a primitive date because is a class
     String text = "Hello, world";
+    */
+
+
+    private final String id;
+    private final String name;
+    private final double averageNotes;
+    private static final List<String> TECNOLOGYS = List.of("Java", "Python", "JavaScript", "AWS");
+
+    private static final Map<Integer, String> HEADQUATERS = Map.of(
+            1, "Headquarter Norte",
+            2, "Headquarter Sur",
+            3, "Headquarter Virtual"
+    );
+
+
+    public Empleado(String id, String name, double averageNotes) {
+        this.id = id;
+        this.name = name;
+        this.averageNotes = averageNotes;
+    }
+
+
+    public String getId() { return id; }
+    public String getName() { return name; }
+    public double getAverageNotes() { return averageNotes; }
 
     public static double calculateFinalSalary(double salary, double bonus) {
-
-        return (salary + (bonus)) - (salary * 0.05);
+        return (salary + bonus) - (salary * 0.05);
     }
 
-    public void bonusApply(int idEmployed, double extraBonus) {
-        if (idEmployed % 2 == 0) {
-            extraBonus += 50000;
-            System.out.println("Extra bonus apply. " + extraBonus);
+    public boolean validateEligibility(int scoreTest, int age, int headquarters, boolean isActive) {
+        var validHeadquarter = HEADQUATERS.containsKey(headquarters);
+
+        if(!validHeadquarter){
+            System.out.println("Error: the Headquarter " + headquarters + " don't register.");
+            return false;
         }
-
+        return (scoreTest > 85 && age < 30) || (headquarters == 1 && !isActive);
     }
 
-    public boolean validarElegibilidad(int scoreTest, int age, int headsquarter, boolean isActive) {
-
-        return (scoreTest > 85 && age < 30) || (headsquarter == 1 && !isActive);
-    }
-
-    public static void obtenerCategoriaSalarial(double salary, double bonus){
-        var total = calculateFinalSalary(salary,bonus);
+    public static void getSalaryCategory(double salary, double bonus){
+        var total = calculateFinalSalary(salary, bonus);
         var totalSalary = validate.NumberIsZero(total);
-        var million = (int) totalSalary / 1000000;
+        var million = (int) totalSalary / 1_000_000;
 
         String category = switch (million){
             case 0,1 -> "Low range";
@@ -47,44 +72,7 @@ public class Empleado {
             default -> "High range";
         };
         System.out.println("Category result: " + category);
-
-    }
-    public static double[][] gradesMatrix(){
-        return new double[][]{
-                {3.5,4,4.5},
-                {5,2.8,3.5},
-                {3,4.2,5}
-        };
-    }
-
-    public static double averageStudent(){
-        double [][] matrix = gradesMatrix();
-        if (matrix.length == 0){
-            System.out.println("Empty array.");
-        }
-        double addition = 0;
-        int totalNotes = 0;
-        for(int i = 0; i < matrix.length; i++){
-            var notes = matrix[i];
-            for(double note:notes){
-                addition += note;
-                totalNotes ++;
-            }
-        }
-        return addition/ totalNotes;
-
-    }
-    public static int simplifiedScore(){
-        return (int) averageStudent();
-        //documentation in:
-        //src/main/java/org.moodle/readme.md#loss-of-precision
-    }
-
-    public static void promotionStatus(){
-        String promote = (averageStudent()>3.5) ? "promoted":"not promoted";
-        System.out.println("The Employed: " + promote);
     }
 
 
 }
-

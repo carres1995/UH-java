@@ -1,6 +1,7 @@
 package org.moodle;
 
 import org.moodle.domain.Empleado;
+import org.moodle.service.EmpleadoService;
 import org.moodle.utils.Validations;
 
 import java.util.InputMismatchException;
@@ -8,33 +9,58 @@ import java.util.Scanner;
 
 public class App {
 
-    Empleado com = new Empleado();
     Validations validate = new Validations();
+    EmpleadoService service = new EmpleadoService();
 
     public void menu() {
         System.out.println("""
-                Employers and Companys
-                Welcome to Management System
+                Employees Management System
                 ---------------------------
-                1. Employee (salary calculate)
-                2. validate eligibility
-                3. notes average - simplify score - promotion status
-                4. Salir
+                1. Add Employee
+                2. List Employees
+                3. Delete Employee
+                4. Salary calculation
+                5. Validate eligibility
+                6. Exit
                 """);
     }
 
     public void start() {
         var scanner = new Scanner(System.in);
         int option;
+
         try{
             do {
-                menu(); // 🔥 mostrar menú
+                menu();
 
-                option = validate.scIsNumber(scanner); // 🔥 actualizar opción
+                option = validate.scIsNumber(scanner);
 
                 switch (option) {
 
                     case 1:
+                        System.out.print("Enter ID: ");
+                        var id = scanner.nextLine();
+
+                        System.out.print("Enter name: ");
+                        var name = scanner.nextLine();
+
+                        System.out.print("Enter average: ");
+                        var avg = Double.parseDouble(scanner.nextLine());
+
+                        service.addEmployee(new Empleado(id, name, avg));
+                        break;
+
+                    case 2:
+                        service.listEmployees();
+                        break;
+
+                    case 3:
+                        System.out.print("Enter ID to delete: ");
+                        var idDelete = scanner.nextLine();
+                        service.deleteEmployee(idDelete);
+                        break;
+
+                    case 4:
                         System.out.print("Enter salary: ");
                         var salary = Double.parseDouble(scanner.nextLine());
 
@@ -42,50 +68,45 @@ public class App {
                         var bonus = Double.parseDouble(scanner.nextLine());
 
                         var total = Empleado.calculateFinalSalary(salary, bonus);
-                        Empleado.obtenerCategoriaSalarial(salary,bonus);
+                        Empleado.getSalaryCategory(salary, bonus);
+
                         System.out.println("Final salary: " + total);
                         break;
 
-
-                    case 2:
+                    case 5:
                         System.out.print("Enter score: ");
                         var score = validate.scIsNumber(scanner);
 
                         System.out.print("Enter age: ");
                         var age = validate.scIsNumber(scanner);
 
-                        System.out.print("Enter id: ");
-                        var headquaters = validate.scIsNumber(scanner);
+                        System.out.print("Enter headquarters ID: ");
+                        var hq = validate.scIsNumber(scanner);
 
-                        System.out.print("¿Está activo? (true/false): ");
+                        System.out.print("Is active? (true/false): ");
                         var isActive = Boolean.parseBoolean(scanner.nextLine());
 
-                        var result = com.validarElegibilidad(score, age, headquaters, isActive);
-                        System.out.println("Elegible: " + result);
+                        var temp = new Empleado("0","temp",0);
+                        var result = temp.validateEligibility(score, age, hq, isActive);
+
+                        System.out.println("Eligible: " + result);
                         break;
 
-                    case 3:
-                        var average= Empleado.averageStudent();
-                        var score2 = Empleado.simplifiedScore();
-                        System.out.println(String.format("""
-                                The average is: %f
-                                The score is: %d
-                                """,average,score2));
-                        Empleado.promotionStatus();
-                    case 4:
-                        System.out.println("Saliendo...");
+                    case 6:
+                        System.out.println("Exiting...");
                         break;
 
                     default:
                         System.out.println("Invalid option.");
                 }
 
-            } while (option != 3);
+            } while (option != 6);
+
         }catch (InputMismatchException e){
-            System.out.println("Must enter a valid value" + e);
+            System.out.println("Must enter a valid value " + e);
             /*
             See documentation:
-            src/main/java/org/moodle/readme.md/lts-analisys-Evolution-of-Exception-Diagnostics
+            src/main/java/org/moodle/readme.md/lts-analysis-Evolution-of-Exception-Diagnostics
              */
         }
 
