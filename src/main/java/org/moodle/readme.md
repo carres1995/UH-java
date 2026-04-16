@@ -36,3 +36,6 @@ Feature	Java 8
 ## loss of precision
 When explicitly casting 'double' to 'int', Java removes the fractional part (mantissa) without rounding.
 This results in a significant loss of data for financial or academic reports, as 4.9 and 4.0 would both be reported as 4.
+
+## LTS ANALYSIS: Evolution of Exception Diagnostics
+In Java 8: Error messages were often generic (like NullPointerException). The developer had to guess which part of a line like 'a.getB().getC()' was null. In Java 17/21: "Helpful NullPointerExceptions" and "Enhanced Error Messages" were introduced. Now, Java explicitly tells you exactly which variable caused the error and provides more context in the StackTrace, reducing debugging time significantly.

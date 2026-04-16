@@ -58,23 +58,31 @@ public class Empleado {
     }
 
     public static double averageStudent(){
+        double [][] matrix = gradesMatrix();
+        if (matrix.length == 0){
+            System.out.println("Empty array.");
+        }
         double addition = 0;
-        for(int i = 0; i < gradesMatrix().length; i++){
-            if(gradesMatrix().length == 0){
-                System.out.println("Empty array.");
-            }
-            var notes = gradesMatrix()[i];
+        int totalNotes = 0;
+        for(int i = 0; i < matrix.length; i++){
+            var notes = matrix[i];
             for(double note:notes){
                 addition += note;
+                totalNotes ++;
             }
         }
-        return addition/ gradesMatrix().length;
+        return addition/ totalNotes;
 
     }
     public static int simplifiedScore(){
         return (int) averageStudent();
         //documentation in:
-        //org.moodle/readme.md#loss-of-precision
+        //src/main/java/org.moodle/readme.md#loss-of-precision
+    }
+
+    public static void promotionStatus(){
+        String promote = (averageStudent()>3.5) ? "promoted":"not promoted";
+        System.out.println("The Employed: " + promote);
     }
 
 
