@@ -15,7 +15,7 @@ Feature	Java 8
 - Mutability	Mutable: You can change values anytime using setters.	Immutable: Values are fixed (read-only) once created.
 - Syntax	public class User { private String name... }	public record User(String name) {}
 
-## Explain
+## Explain "NullPointerException"
 - "NullPointerException" = generate error
 - En Java 17/21, the descriptive message:
   "Cannot invoke String.toUpperCase() because 'nullString' is null"
@@ -23,6 +23,7 @@ Feature	Java 8
 - The '==' operator compares the REFERENCE in the Heap memory.
 - Even though they have the same data, they are two distinct objects in different memory locations.
 - To compare the CONTENT in Records, we would use company.equals(company2) -> true. ##
+
 
 
 ### UH #2
@@ -42,8 +43,12 @@ In Java 8: Error messages were often generic (like NullPointerException). The de
 
 ### UH #3
 ## SECURITY AND DESIGN ANALYSIS (JAVA 11):
-These collections created with List.of() and Map.of() are IMMUTABLE.
-1. Security: They are thread-safe in multithreaded environments because their state does not change.
-2. Integrity: They prevent accidental errors when attempting to add a location or technology that does not exist using .add().
-If you try to use .add() or .remove(), Java will throw an UnsupportedOperationException.
-Performance: Unlike traditional ArrayLists, they occupy less memory because they have a predefined fixed size.
+These collections created with List.of() and Map.of() are IMMUTABLE. Security: They are thread-safe in multithreaded environments because their state does not change. Integrity: They prevent accidental errors when attempting to add a location or technology that does not exist using .add(). If you try to use .add() or .remove(), Java will throw an UnsupportedOperationException. Performance: Unlike traditional ArrayLists, they occupy less memory because they have a predefined fixed size.
+
+## removeIf()
+it's used to delete elements of the collections (as ArrayList) with a condition return a boolean date
+is a lambda expression. 
+
+## Type inference java 11 8
+Java 11 introduced local variable type inference using `var`. This feature reduces verbosity while maintaining readability. Before type (java 8) explicit `var HashMap<String, String> date = HashMap<>()`
+

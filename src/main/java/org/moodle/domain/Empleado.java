@@ -27,6 +27,7 @@ public class Empleado {
     private final String id;
     private final String name;
     private final double averageNotes;
+    private final double salary;
     private static final List<String> TECNOLOGYS = List.of("Java", "Python", "JavaScript", "AWS");
 
     private static final Map<Integer, String> HEADQUATERS = Map.of(
@@ -36,9 +37,10 @@ public class Empleado {
     );
 
 
-    public Empleado(String id, String name, double averageNotes) {
+    public Empleado(String id, String name, double averageNotes, double salary) {
         this.id = id;
         this.name = name;
+        this. salary = salary;
         this.averageNotes = averageNotes;
     }
 
@@ -46,6 +48,10 @@ public class Empleado {
     public String getId() { return id; }
     public String getName() { return name; }
     public double getAverageNotes() { return averageNotes; }
+
+    public double getSalary() {
+        return salary;
+    }
 
     public static double calculateFinalSalary(double salary, double bonus) {
         return (salary + bonus) - (salary * 0.05);
@@ -73,6 +79,8 @@ public class Empleado {
         };
         System.out.println("Category result: " + category);
     }
+
+
 
 
 }

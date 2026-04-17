@@ -2,6 +2,7 @@ package org.moodle;
 
 import org.moodle.domain.Empleado;
 import org.moodle.service.EmpleadoService;
+import org.moodle.service.FinalReport;
 import org.moodle.utils.Validations;
 
 import java.util.InputMismatchException;
@@ -11,6 +12,7 @@ public class App {
 
     Validations validate = new Validations();
     EmpleadoService service = new EmpleadoService();
+    FinalReport report = new FinalReport(service);
 
     public void menu() {
         System.out.println("""
@@ -18,10 +20,13 @@ public class App {
                 ---------------------------
                 1. Add Employee
                 2. List Employees
-                3. Delete Employee
-                4. Salary calculation
-                5. Validate eligibility
-                6. Exit
+                3. First and Last Employees and Reverse list
+                4. Delete Employee
+                5. Salary calculation
+                6. Validate eligibility
+                7. Deleted by Average
+                8. Final report
+                9. Exit
                 """);
     }
 
@@ -46,8 +51,10 @@ public class App {
 
                         System.out.print("Enter average: ");
                         var avg = Double.parseDouble(scanner.nextLine());
+                        System.out.println("Enter salary: ");
+                        var salary = Double.parseDouble((scanner.nextLine()));
 
-                        service.addEmployee(new Empleado(id, name, avg));
+                        service.addEmployee(new Empleado(id, name, avg,salary));
                         break;
 
                     case 2:
@@ -55,25 +62,30 @@ public class App {
                         break;
 
                     case 3:
+                        service.firstEmployees();
+                        service.lastEmployees();
+                        service.ReverseList();
+
+                    case 4:
                         System.out.print("Enter ID to delete: ");
                         var idDelete = scanner.nextLine();
                         service.deleteEmployee(idDelete);
                         break;
 
-                    case 4:
+                    case 5:
                         System.out.print("Enter salary: ");
-                        var salary = Double.parseDouble(scanner.nextLine());
+                        var salary2 = Double.parseDouble(scanner.nextLine());
 
                         System.out.print("Enter bonus: ");
                         var bonus = Double.parseDouble(scanner.nextLine());
 
-                        var total = Empleado.calculateFinalSalary(salary, bonus);
-                        Empleado.getSalaryCategory(salary, bonus);
+                        var total = Empleado.calculateFinalSalary(salary2, bonus);
+                        Empleado.getSalaryCategory(salary2, bonus);
 
                         System.out.println("Final salary: " + total);
                         break;
 
-                    case 5:
+                    case 6:
                         System.out.print("Enter score: ");
                         var score = validate.scIsNumber(scanner);
 
@@ -86,15 +98,25 @@ public class App {
                         System.out.print("Is active? (true/false): ");
                         var isActive = Boolean.parseBoolean(scanner.nextLine());
 
-                        var temp = new Empleado("0","temp",0);
+                        var temp = new Empleado("0","temp",0, 0);
                         var result = temp.validateEligibility(score, age, hq, isActive);
 
                         System.out.println("Eligible: " + result);
                         break;
-
-                    case 6:
+                    case 7:
+                        service.filterDeleted();
+                        break;
+                    case 8:
+                        System.out.printf("""
+                                Final Report is:
+                                    Employees Amount: %d
+                                    Average Employees: %f
+                                %n""",report.totalEmployes(),report.salaryAverage());
+                        break;
+                    case 9:
                         System.out.println("Exiting...");
                         break;
+
 
                     default:
                         System.out.println("Invalid option.");
