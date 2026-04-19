@@ -14,10 +14,25 @@ public class Validations {
             }
         }
     }
+    public double numberIsRange(Scanner sc) {
+        while (true){
+            try{
+            double input = Double.parseDouble(sc.nextLine());
+            if (input >= 0 && input <= 5) {
+                return input;
+            }
+            System.out.println("It isn't in range.");
+            } catch (Exception e){
+                System.out.println("Enter a valid number.");
+            }
+        }
+    }
     public double NumberIsZero(double value){
         if(value <= 0){
             System.out.println("Must to be greater than zero");
         }
         return value;
     }
+
+
 }
