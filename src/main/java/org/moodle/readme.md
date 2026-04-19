@@ -52,3 +52,14 @@ is a lambda expression.
 ## Type inference java 11 8
 Java 11 introduced local variable type inference using `var`. This feature reduces verbosity while maintaining readability. Before type (java 8) explicit `var HashMap<String, String> date = HashMap<>()`
 
+### UH #4
+
+## Sealed security
+Total Control: You define which classes can extend, preventing third parties from altering business logic. Robust Code: The compiler ensures all cases (subclasses) are covered in switch statements, eliminating "forgotten case" errors. Security: Prevents unauthorized subclasses that could break the application's integrity.
+
+## Records and POJO
+In records the dates are immutability in records by must are finals in all case, fewer lines of code, methods already defined, 
+
+## Instanceof()
+The instanceOf() operator in java used to check if an object is an instance of a specific class,a subclass or implements an interface.
+

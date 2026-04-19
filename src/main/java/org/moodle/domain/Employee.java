@@ -1,11 +1,12 @@
 package org.moodle.domain;
 
+import org.moodle.Promotable;
 import org.moodle.utils.Validations;
 
 import java.util.List;
 import java.util.Map;
 
-public class Empleado {
+public non-sealed class Employee extends Person implements Promotable {
     static Validations validate = new Validations();
 
     //these are primitives dates
@@ -23,30 +24,28 @@ public class Empleado {
     String text = "Hello, world";
     */
 
-
-    private final String id;
-    private final String name;
     private final double averageNotes;
     private final double salary;
     private static final List<String> TECNOLOGYS = List.of("Java", "Python", "JavaScript", "AWS");
+
 
     private static final Map<Integer, String> HEADQUATERS = Map.of(
             1, "Headquarter Norte",
             2, "Headquarter Sur",
             3, "Headquarter Virtual"
     );
+    @Override
+    public double calculatePromotionBonus() {
+        return getSalary() * 0.10;
+    }
 
-
-    public Empleado(String id, String name, double averageNotes, double salary) {
-        this.id = id;
-        this.name = name;
+    public Employee(String id, String name, double averageNotes, double salary) {
+        super(id, name);
         this. salary = salary;
         this.averageNotes = averageNotes;
     }
 
 
-    public String getId() { return id; }
-    public String getName() { return name; }
     public double getAverageNotes() { return averageNotes; }
 
     public double getSalary() {
@@ -79,8 +78,5 @@ public class Empleado {
         };
         System.out.println("Category result: " + category);
     }
-
-
-
 
 }
