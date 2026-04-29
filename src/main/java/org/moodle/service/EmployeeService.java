@@ -1,100 +1,108 @@
 package org.moodle.service;
 
-import org.moodle.domain.Developer;
 import org.moodle.domain.Employee;
+import org.moodle.persistence.ConfigDB;
+import org.moodle.domain.records.PerformanceReport;
 
-
-
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
+/**
+ * Service refactorizado con funcionalidades SQL avanzadas.
+ */
 public class EmployeeService {
 
-    private final ArrayList<Employee> employeesList = new ArrayList<>();
-    private final Map<String, Employee> employessMap = new HashMap<>();
-
-    public Map<String, Employee> employeesMap(){
-        // documentated in: src/main/java/org/moodle/readme.md#
-        return this.employessMap;
-    }
-
-    public ArrayList<Employee> employeesList(){
-        // documentated in: src/main/java/org/moodle/readme.md#
-        return this.employeesList;
-    }
-
-
-
-    public void addEmployee(Employee employee, String id) {
-        if (employeesMap().containsKey(id)) {
-            System.out.println("Id already exist.");
-            return;
-        }
-        employeesList().add(employee);
-        employeesMap().put(employee.getId(), employee);
-        System.out.println("Employee added successfully.");
-
-        listEmployees();
-    }
-
-
-    public void listEmployees() {
-        if (employeesList().isEmpty()) {
-            System.out.println("No employees registered.");
-            return;
-        }
-
-        for (Employee emp : employeesList()) {
-            System.out.println("ID: " + emp.getId() +
-                    " | Name: " + emp.getName() +
-                    " | Avg: " + emp.getAverageNotes());
+    public void addEmployee(Employee employee) {
+        String sql = "INSERT INTO employees (id, name, average_notes, salary) VALUES (?, ?, ?, ?)";
+        try (Connection conn = ConfigDB.openConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, employee.getId());
+            ps.setString(2, employee.getName());
+            ps.setDouble(3, employee.getAverageNotes());
+            ps.setDouble(4, employee.getSalary());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("DB Error (Add): " + e.getMessage());
         }
     }
 
-
-    public Employee findById(String id) {
-        return employeesMap().get(id);
+    public List<Employee> getAllEmployees() {
+        return getListFromSQL("SELECT * FROM employees");
     }
 
+    // Mejora: Obtener el primer empleado usando SQL (Eficiencia)
+    public Employee getFirstEmployee() {
+        List<Employee> list = getListFromSQL("SELECT * FROM employees ORDER BY id ASC LIMIT 1");
+        return list.isEmpty() ? null : list.getFirst();
+    }
+
+    // Mejora: Obtener el último empleado usando SQL
+    public Employee getLastEmployee() {
+        List<Employee> list = getListFromSQL("SELECT * FROM employees ORDER BY id DESC LIMIT 1");
+        return list.isEmpty() ? null : list.getFirst();
+    }
+
+    // Mejora: Lista en reversa usando SQL
+    public List<Employee> getReverseList() {
+        return getListFromSQL("SELECT * FROM employees ORDER BY id DESC");
+    }
 
     public void deleteEmployee(String id) {
-        Employee emp = employeesMap().remove(id);
-
-        if (emp != null) {
-            employeesList().remove(emp);
-            System.out.println("Employee deleted.");
-        } else {
-            System.out.println("Employee not found.");
+        String sql = "DELETE FROM employees WHERE id = ?";
+        try (Connection conn = ConfigDB.openConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("DB Error (Delete): " + e.getMessage());
         }
     }
-    public void firstEmployees(){
-        if(employeesList().isEmpty()) return;
-        System.out.println("The first employed of list is: " + employeesList().getFirst().getName());
-    }
 
-    public void lastEmployees(){
-        if(employeesList().isEmpty()) return;
-        System.out.println("The Last employed of list is: " + employeesList().getLast().getName());
-    }
-
-    public void ReverseList(){
-        if(employeesList().isEmpty())return;
-        System.out.println("--- List in reverse: ");
-        for(Employee com: employeesList().reversed()){
-
-            System.out.println( com.getId() + " | " + com.getName() + " | " + com.getAverageNotes());}
-    }
-
-    public void filterDeleted(){
-
-        var deletes = employeesList().removeIf(n -> n.getAverageNotes() < 3);
-        // documentated in: src/main/java/org/moodle/readme.md#removeif
-        if(deletes){
-            for(Employee com : employeesList())
-                System.out.println("Employees with a bad average: " + com.getName());
+    public Employee findById(String id) {
+        String sql = "SELECT * FROM employees WHERE id = ?";
+        try (Connection conn = ConfigDB.openConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Employee(rs.getString("id"), rs.getString("name"), 
+                                        rs.getDouble("average_notes"), rs.getDouble("salary"));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("DB Error (Find): " + e.getMessage());
         }
-
+        return null;
     }
 
+    private List<Employee> getListFromSQL(String sql) {
+        List<Employee> list = new ArrayList<>();
+        try (Connection conn = ConfigDB.openConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                list.add(new Employee(rs.getString("id"), rs.getString("name"),
+                        rs.getDouble("average_notes"), rs.getDouble("salary")));
+            }
+        } catch (SQLException e) {
+            System.err.println("DB Query Error: " + e.getMessage());
+        }
+        return list;
+    }
+
+    public List<PerformanceReport> getPerformanceReport() {
+        List<PerformanceReport> reports = new ArrayList<>();
+        String sql = "SELECT id, name, average_notes FROM employees WHERE average_notes >= 4.0";
+        try (Connection conn = ConfigDB.openConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                reports.add(new PerformanceReport(rs.getInt("id"), rs.getDouble("average_notes"), "High Performance"));
+            }
+        } catch (SQLException e) {
+            System.err.println("Complex Query Error: " + e.getMessage());
+        }
+        return reports;
+    }
 }
