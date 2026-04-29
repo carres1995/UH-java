@@ -63,3 +63,24 @@ In records the dates are immutability in records by must are finals in all case,
 ## Instanceof()
 The instanceOf() operator in java used to check if an object is an instance of a specific class,a subclass or implements an interface.
 
+## UH #5 - JDBC Persistence Integration and MVC Pattern
+
+#### 1. Connection Management (Legacy vs Modern)
+A robust connection architecture was implemented in the `ConfigDB` class.
+*   **Legacy Style (Java 8-)**: Documented the usage of the `finally` block for manual connection closing, a method prone to "Memory Leaks" if one forgot to close a `ResultSet` or `Statement`.
+*   **Modern Syntax (Java 17/21)**: Mandatory use of **`try-with-resources`**. This feature ensures that every resource implementing `AutoCloseable` is automatically closed at the end of the block, preventing memory leaks and simplifying the code.
+
+#### 2. DAO Implementation and Secure CRUD
+The `EmployeeRepository` interface and its physical implementation `EmployeeRepositoryImpl` were created.
+*   **Security**: Strict use of **`PreparedStatement`** for all queries. This prevents **SQL Injection** attacks by separating the query logic from the data provided by the user.
+*   **Operations**: Completed the full CRUD cycle (Insert, List, Update, and Delete) with real persistence in MySQL.
+
+#### 3. MVC Architecture (Model-View-Controller)
+The project was refactored to separate responsibilities professionally:
+*   **Model**: Entities (`domain`) and persistence (`repository`).
+*   **View**: `App.java` class, exclusively responsible for user interaction via `Scanner`.
+*   **Controller**: `EmployeeController`, acting as a mediator and coordinating data flow without the view knowing the database implementation.
+
+#### 4. Records and Text Blocks (Modern Java 17+)
+*   **Records**: Used `PerformanceReport` to map results of complex queries. Records offer immutability and eliminate boilerplate code (getters/setters), making maintenance easier compared to traditional POJOs.
+*   **Text Blocks**: Implemented text blocks (`"""`) in the view's report generation, allowing for visually appealing and readable console output formatting directly within the code.
